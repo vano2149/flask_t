@@ -1,6 +1,6 @@
 """
 Первая простая API.
-С одним запросом GET.
+CRUD API for Srotes.
 """
 
 from flask import Flask, jsonify
