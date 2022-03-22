@@ -6,6 +6,8 @@ authrnticate func.
 
 from flask import Flask, request
 from flask_restful import Resource, Api , reqparse
+#Расширения flask_jwt импортируем:
+
 
 #Сущьность приложения.
 app = Flask(__name__)
@@ -74,3 +76,12 @@ class ItemCollection(Resource):
     """
     Ресурсб отвечающий за работу с МНОЖЕСТВОМ товаров
     """
+    def get(self):
+        """
+        GET /Iitems - возвращает информацию про все товары в магазине
+        """
+        return {"database" : db}, 200
+
+# Добавим ресурс к API.
+api.add_resource(Item, 'item/<string:name>')
+api.add_resource(ItemCollection, '/items')
