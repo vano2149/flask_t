@@ -7,18 +7,31 @@ authrnticate func.
 from flask import Flask, request
 from flask_restful import Resource, Api , reqparse
 #Расширения flask_jwt импортируем:
+from flask_jwt import JWT, jwt_required
+# из нашего auth_conf достаем 2 функции.
+from auth_conf import authenticate, identity
+import os
 
 
 #Сущьность приложения.
 app = Flask(__name__)
 
+# Секретный ключ приложения (на основе которого будут осуществляться все операции шибрования/дешифрования)
+app.secret_key = os.environ.get('SECRET_KEY') or "1234567890"
+# после мы его перенесем отсюда.
+
 # сущьность API
 api = Api(app)
+
+# Сущность менеджера токенов
+jwt = JWT(app, authentication_handler = authenticate, identity_handler = identity)
 
 # сущьность БД
 db = []
 
+
 #Ресурсе Item/item/<string:name>
+
 class Item(Resource):
     """
     Ресурс, отвечающий за работу с Одной товарной единицей
@@ -29,7 +42,7 @@ class Item(Resource):
     parser.add_argument("price", type=float, required=True, help="Field 'price' required float value!")
     # Нам ОБЯЗАТЕЛЬНО НУЖЕН amount типа int
     parser.add_argument("amount", type = int, required=True, help="This field required int value!")
-
+    @jwt_required()
     def get(self, name):
         """
         GET /item/<string:name> - Возвращаем информацию 
@@ -83,5 +96,9 @@ class ItemCollection(Resource):
         return {"database" : db}, 200
 
 # Добавим ресурс к API.
-api.add_resource(Item, 'item/<string:name>')
-api.add_resource(ItemCollection, '/items')
+api.add_resource(Item,'/item/<string:name>')
+api.add_resource(ItemCollection,'/items')
+
+# Разобраться с работой auth_
+if __name__ == "__main__":
+    app.run(port=8080, debug=True)
