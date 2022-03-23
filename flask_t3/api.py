@@ -99,6 +99,6 @@ class ItemCollection(Resource):
 api.add_resource(Item,'/item/<string:name>')
 api.add_resource(ItemCollection,'/items')
 
-# Разобраться с работой auth_
+# Запуск нашего приложения.
 if __name__ == "__main__":
     app.run(port=8080, debug=True)
