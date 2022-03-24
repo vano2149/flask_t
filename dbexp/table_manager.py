@@ -8,17 +8,20 @@ import sqlite3
 #Подключение к субд (реальное)
 # conn - это объект подключения к бд. Выполняется проверка предварительных данных,
 # создание файла в случае отсутствия, и PING базы данных. 
-conn = sqlite3.connect("data.db") 
+conn = sqlite3.connect("data.db")
+
 # Интерфейс бд.
-# cursore = 
+# cursor - это объект интерфейса СББД, 
+# через него будут проходить все запросы и обращения.
 cursor = conn.cursor()
 
-# Нервая команда - создать какую-нибуть таблицу.
-
+# Первая команда - создать какую-нибуть таблицу.
 create_query = 'CREATE TABLE IF NOT EXISTS user (id INTEGER RYMARY KEY, login TEXT, password TEXT)'
-
+# Запрос пишется в виде одной строки, содержащей команды, понятные языку SQL.
 # Выполняем Запрос.
-cursor.execute(create_query)
+cursor.execute(create_query, params)
+# query - сам запрос
+# params - Это кортеж с параметром (будут подставленны на место "?" в вашем запросе)
 
 # Сохраняем изменения
 conn.commit()
@@ -32,11 +35,11 @@ insert_query = 'INSERT INTO user VALUES(NULL, ?, ?)' # ? - placeholder для
 for i in range(1, 1000):
     cursor.execute(insert_query, user)
     # Сохраним изменения.
-conn.commit()
+conn.commit() # - сохраняем текущего состаяния таблиц.
 
 # Третья команда - проверим, что в бд что-то появилось
 select_query = 'SELECT * FROM user'
 for row in cursor.execute(select_query):
     print(row)
 # Отключаемся от БД.
-conn.close()
+conn.close() # - "разрыв" соединения с бд (безопасное закрытее соединения)
